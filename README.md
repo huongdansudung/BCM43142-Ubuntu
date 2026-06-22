@@ -14,3 +14,22 @@ sudo apt install broadcom-sta-common broadcom-sta-dkms
 If the installation finishes successfully but your Wi-Fi icon still does not appear, you need to manually tell Linux to unload the bad open-source modules and load the new proprietary one:
 sudo modprobe -rv bcma
 sudo modprobe -v wl
+# Step 5: Reboot
+reboot for wifi
+
+# Step 6: Install firmware bluetooth B43
+Open your Terminal (Ctrl + Alt + T) and run the following commands to get the required firmware downloader and compilation tools:
+sudo apt update
+sudo apt install git build-essential bluez firmware-b43-installer
+
+
+# Step 7: Install driver bluetooth
+Download all BCM41342A0-trusty-binary files, then right click file install-bcm43142a0 choice "Run as the Program" to install bluetooth.
+
+# Step 8: Restart the Bluetooth Module
+Once the file is in place, you need to tell Ubuntu to reload the Bluetooth driver
+sudo modprobe -r btusb
+sudo modprobe btusb
+
+# Step 9: Reboot
+reboot for bluetooth
