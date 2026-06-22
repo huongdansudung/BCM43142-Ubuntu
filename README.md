@@ -33,3 +33,5 @@ sudo modprobe btusb
 
 # Step 9: Reboot
 reboot for bluetooth
+
+(Lenovo G40, Ubuntu 26.04 LTS, 22 June, 2026)
