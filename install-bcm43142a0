@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+function keep_orig() 
+{
+	cp -n "$1" "$1.orig" 
+	chmod a-x "$1.orig"
+}
+
+SCRIPT_DIR="$(readlink -f "$0" | xargs dirname)"
+SCRIPT_NAME="$(basename "$0")"
+
+if [ $(id -u) -ne 0 ]; then
+	sudo "$0" "$@"
+	exit $?
+fi
+
+LIB_MODULES_DIR="/lib/modules/$(uname -r)"
+
+cp "$SCRIPT_DIR/btusb.ko" "$LIB_MODULES_DIR/kernel/$MODULE_SUBDIR/btusb.ko"
+
+depmod
+mkdir -p "/lib/firmware/brcm"
+cp $SCRIPT_DIR/BCM43142A0.hcd /lib/firmware/brcm/BCM43142A0-105b-e065.hcd
+
+cat << EOF > "/lib/systemd/system-sleep/suspend-module-btusb"
+#!/bin/sh
+
+case "$1" in
+        pre)
+                modprobe -r btusb
+                ;;
+        post)
+                modprobe btusb
+                ;;
+esac
+EOF
+chmod a+x "/lib/systemd/system-sleep/suspend-module-btusb"
+
+modprobe -r btusb
+modprobe btusb
+
